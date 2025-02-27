@@ -41,4 +41,16 @@ const adminValidation = Joi.object({
   }),
 });
 
-export default adminValidation;
+const validateResetPassword = Joi.object({
+  token: Joi.string().required().messages({
+    "string.empty": "Reset token is required",
+    "any.required": "Reset token is required"
+  }),
+  newPassword: Joi.string().min(8).required().messages({
+    "string.empty": "New password is required",
+    "string.min": "Password must be at least 8 characters long",
+    "any.required": "New password is required"
+  })
+});
+
+export default {adminValidation,validateResetPassword}
