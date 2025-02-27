@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 
-const sendResetPasswordEmail = async ({ name, email, resetToken, expiryTime }) => {
-  const transporter = nodemailer.createTransport({
+const createTransporter = () => {
+  return nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
     auth: {
@@ -9,18 +9,34 @@ const sendResetPasswordEmail = async ({ name, email, resetToken, expiryTime }) =
       pass: process.env.EMAIL_PASS
     }
   });
+};
+
+const sendEmail = async ({ to, subject, html, text }) => {
+  const transporter = createTransporter();
   
+  const info = await transporter.sendMail({
+    from: `"${process.env.EMAIL_FROM_NAME}" <${process.env.EMAIL_FROM}>`,
+    to,
+    subject,
+    text,
+    html
+  });
+  
+  return info;
+};
+
+const sendResetPasswordEmail = async ({ name, email, resetToken, expiryTime }) => {
   const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
   
   const subject = "Password Reset Request";
   
-  const htmlMessage = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+  const htmlMessage = `     
+    <div>
       <h2>Reset Your Password</h2>
       <p>Hello${name ? ` ${name}` : ''},</p>
       <p>You requested to reset your password. Please click the button below to set a new password:</p>
-      <div style="text-align: center; margin: 30px 0;">
-        <a href="${resetUrl}" style="background-color: #4CAF50; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">Reset Password</a>
+      <div>
+        <a href="${resetUrl}" style="padding: 10px 15px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">Reset Password</a>
       </div>
       <p>This link will expire in ${expiryTime}.</p>
       <p>If you did not request a password reset, please ignore this email or contact support if you have concerns.</p>
@@ -45,15 +61,16 @@ const sendResetPasswordEmail = async ({ name, email, resetToken, expiryTime }) =
     Admin Team
   `;
   
-  const info = await transporter.sendMail({
-    from: `"${process.env.EMAIL_FROM_NAME}" <${process.env.EMAIL_FROM}>`,
+  return sendEmail({
     to: email,
     subject,
-    text: textMessage,
-    html: htmlMessage
+    html: htmlMessage,
+    text: textMessage
   });
-  
-  return info;
 };
 
-export default sendResetPasswordEmail
+
+export {
+  sendResetPasswordEmail,
+  sendEmail
+};
