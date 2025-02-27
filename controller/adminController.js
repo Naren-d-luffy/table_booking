@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Admin from "../model/admin.model.js";
 import {adminValidation} from "../validator/admin.validator.js";
-import sendResetPasswordEmail from "../utils/resetPasswordEmail.js";
+import {sendResetPasswordEmail} from "../utils/emailSender.js";
 import {validateResetPassword} from "../validator/admin.validator.js";
 
 export const createAdmin = async (req, res) => {
