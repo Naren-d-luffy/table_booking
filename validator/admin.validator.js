@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const adminValidation = Joi.object({
+export const adminValidation = Joi.object({
   name: Joi.string()
     .trim()
     .min(3)
@@ -41,7 +41,7 @@ const adminValidation = Joi.object({
   }),
 });
 
-const validateResetPassword = Joi.object({
+export const validateResetPassword = Joi.object({
   token: Joi.string().required().messages({
     "string.empty": "Reset token is required",
     "any.required": "Reset token is required"
@@ -52,5 +52,3 @@ const validateResetPassword = Joi.object({
     "any.required": "New password is required"
   })
 });
-
-export default {adminValidation,validateResetPassword}
