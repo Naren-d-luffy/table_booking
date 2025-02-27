@@ -152,7 +152,7 @@ export const forgotPassword = async (req, res) => {
         email: admin.email,
         passwordFingerprint: admin.password.substring(0, 10)
       }, 
-      process.env.JWT_RESET_SECRET || process.env.ACCESS_SECRET,
+      process.env.JWT_RESET_SECRET,
       { expiresIn: "15m" }
     );
 
@@ -203,7 +203,7 @@ export const resetPassword = async (req, res) => {
     
     let decoded;
     try {
-      decoded = jwt.verify(token, process.env.JWT_RESET_SECRET || process.env.ACCESS_SECRET);
+      decoded = jwt.verify(token, process.env.JWT_RESET_SECRET);
     } catch (jwtError) {
       return res.status(400).json({ 
         success: false,
