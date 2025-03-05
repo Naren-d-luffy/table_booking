@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import OTPModel from "../model/otp.model.js";
-// import User from "../model/user.model.js";
+import User from "../model/user.model.js";
 import { sendEmail } from "../utils/emailSender.js";
 
 export const sendOTP = async (req, res) => {
@@ -85,7 +85,7 @@ export const verifyOTP = async (req, res) => {
   const isMatch = await bcrypt.compare(otp, validOTP.otp);
   if (!isMatch) return res.status(400).json({ message: "Invalid OTP" });
 
-//   await User.updateOne({ email }, { verified: true });
+  await User.updateOne({ email }, { verified: true });
 
   await OTPModel.deleteOne({ email });
 
